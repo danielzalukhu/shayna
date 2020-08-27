@@ -1,17 +1,71 @@
 <template>
   <div class="home">
     <HeaderShayna /> 
+    <section class="hero-section">
+      <carousel class="hero-items" :items= "1" :nav="false">
+
+        <!-- Create inline CSS to import pictures  -->
+        <div class="single-hero-items set-bg" style="background-image: url('img/hero-1.jpg')">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <span>Bag,kids</span>
+                        <h1>Black friday</h1>
+                        <p>
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                        </p>
+                        <a href="#" class="primary-btn">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Create inline CSS to import pictures  -->
+        <div class="single-hero-items set-bg" style="background-image: url('img/hero-2.jpg')">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <span>Bag,kids</span>
+                        <h1>Black friday</h1>
+                        <p>
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                        </p>
+                        <a href="#" class="primary-btn">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create inline CSS to import pictures  -->
+        <div class="single-hero-items set-bg" style="background-image: url('img/hero-3.jpg')">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <span>Bag,kids</span>
+                        <h1>Black friday</h1>
+                        <p>
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                        </p>
+                        <a href="#" class="primary-btn">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </carousel>
+    </section>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HeaderShayna from '@/components/HeaderShayna.vue'
+import HeaderShayna from '@/components/HeaderShayna.vue';
+import carousel from 'vue-owl-carousel';
 
 export default {
   name: 'Home',
   components: {
-    HeaderShayna
+    HeaderShayna,
+    carousel
   }
 }
 </script>
