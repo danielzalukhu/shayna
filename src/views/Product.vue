@@ -7,7 +7,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="breadcrumb-text product-more">
-                        <a href="./home.html"><i class="fa fa-home"></i> Home</a>
+                        <router-link to="/"><a href="./home.html"><i class="fa fa-home"></i> Home</a></router-link>
                         <span>Detail</span>
                     </div>
                 </div>
@@ -79,6 +79,8 @@
         </div>
     </section>
     <!-- Product Shop Section End -->
+
+    <RelatedProductShayna />
     <FooterShayna />
   </div>
 </template>
@@ -87,6 +89,7 @@
 // @ is an alias to /src
 import HeaderShayna from '@/components/HeaderShayna.vue';
 import FooterShayna from '@/components/FooterShayna.vue';
+import RelatedProductShayna from '@/components/RelatedProductShayna.vue';
 import carousel from "vue-owl-carousel";
 
 export default {
@@ -94,6 +97,7 @@ export default {
   components: {
     HeaderShayna,
     FooterShayna,
+    RelatedProductShayna,
     carousel
   },
   data() {
@@ -120,3 +124,4 @@ export default {
         margin-right: 14px;
     }
 </style>
+

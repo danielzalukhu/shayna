@@ -11,14 +11,18 @@
                                     <li class="w-icon active">
                                         <a href="#"><i class="icon_bag_alt"></i></a>
                                     </li>
-                                    <li class="quick-view"><a href="product.html">+ Quick View</a></li>
+                                    <li class="quick-view">
+                                        <router-link to="/product">+ Quick View</router-link>
+                                    </li>
                                 </ul>
                             </div>
                             <div class="pi-text">
                                 <div class="catagory-name">Bag</div>
-                                <a href="#">
-                                    <h5>Exclusive Bag</h5>
-                                </a>
+                                <router-link to="/product">
+                                    <a href="#">
+                                        <h5>Exclusive Bag</h5>
+                                    </a>
+                                </router-link>
                                 <div class="product-price">
                                     $56.00
                                     <span>$115.00</span>
