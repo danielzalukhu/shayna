@@ -70,7 +70,7 @@
                                     <h4>$495.00</h4>
                                 </div>
                                 <div class="quantity">
-                                    <router-link to="/cart"><a href="shopping-cart.html" class="primary-btn pd-cart">Add To Cart</a></router-link>
+                                    <router-link to="/cart"><a href="#" class="primary-btn pd-cart">Add To Cart</a></router-link>
                                 </div>
                             </div>
                         </div>
