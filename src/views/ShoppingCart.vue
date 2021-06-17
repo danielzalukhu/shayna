@@ -29,43 +29,44 @@
                     <thead>
                       <tr>
                         <th>Image</th>
-                        <th class="p-name text-center">Product Name</th>
+                        <th class="p-name text-center">Product</th>
                         <th>Price <b>(Rp)</b></th>
-                        <th>Quantity</th>
+                        <th>Qty</th>
                         <th>Subtotal <b>(Rp)</b></th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
+                      <tr v-for="cart in user_cart" :key="cart.id">
                         <td class="cart-pic first-row">
-                          <img src="img/cart-page/product-1.jpg" />
+                          <img class="img-cart" :src="cart.product_image" />
                         </td>
                         <td class="cart-title first-row text-center">
-                          <h5>Pure Pineapple</h5>
+                          <h5>{{ cart.product_name }}</h5>
                         </td>
-                        <td class="p-price first-row">60.00</td>
-                        <td class="p-quantity first-row">2</td>
+                        <td class="p-price first-row">{{ cart.product_price }}</td>
+                        <!-- <td class="p-quantity first-row">2</td> -->
+                        <td class="p-qty first-row">
+                          <form>
+                            <div class="col-lg-2">
+                              <div class="input-group">
+                                <span class="input-group-btn">
+                                  <button type="button" class="quantity-left-minus btn btn-danger btn-number"  data-type="minus" data-field="">
+                                    <span class="glyphicon glyphicon-minus"></span>
+                                  </button>
+                                </span>
+                                <input type="text" id="quantity" name="quantity" class="form-control input-number" value="10" min="1" max="100">
+                                <span class="input-group-btn">
+                                    <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus" data-field="">
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                </span>
+                              </div>
+                            </div>
+                          </form>
+                        </td> 
                         <td class="p-sub-total first-row">300000</td>
-                        <td class="delete-item">
-                          <a href="#"
-                            ><i class="material-icons">
-                              close
-                            </i></a
-                          >
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="cart-pic first-row">
-                          <img src="img/cart-page/product-1.jpg" />
-                        </td>
-                        <td class="cart-title first-row text-center">
-                          <h5>Pure Pineapple</h5>
-                        </td>
-                        <td class="p-price first-row">60.00</td>
-                        <td class="p-quantity second-row">1</td>
-                        <td class="p-sub-total second-row">1650000</td>
-                        <td class="delete-item">
+                        <td class="delete-item" @click="removeCartItem(user_cart.index)">
                           <a href="#"
                             ><i class="material-icons">
                               close
@@ -136,5 +137,57 @@ export default {
   components: {
     HeaderShayna,
   },
+  data() {
+    return {
+      user_cart: []
+    }
+  },
+  methods: {
+    removeCartItem(index) {
+      this.user_cart.splice(index, 1);
+      const parsed = JSON.stringify(this.user_cart);
+      localStorage.setItem("user_cart", parsed);
+    },
+  },
+  mounted() {
+    if (localStorage.getItem("user_cart")) {
+      try {
+        this.user_cart = JSON.parse(localStorage.getItem("user_cart"));
+      } catch (e) {
+        localStorage.removeItem("user_cart");
+      }
+    }
+  },
 };
+
+// eslint-disable-next-line no-undef
+$(document).ready(function(){
+   // eslint-disable-next-line no-undef
+  $('.quantity-right-plus').click(function(e){
+    e.preventDefault();
+    // eslint-disable-next-line no-undef
+    var quantity = parseInt($('#quantity').val());
+    // eslint-disable-next-line no-undef
+    $('#quantity').val(quantity + 1);
+  });
+
+  // eslint-disable-next-line no-undef
+  $('.quantity-left-minus').click(function(e){
+    e.preventDefault();
+    // eslint-disable-next-line no-undef
+    var quantity = parseInt($('#quantity').val());
+        
+    if(quantity>0){
+      // eslint-disable-next-line no-undef
+      $('#quantity').val(quantity - 1);
+    }
+  });    
+});
 </script>
+
+<style scoped>
+.img-cart {
+  width: 200px;
+  height: 125px;
+}
+</style>
