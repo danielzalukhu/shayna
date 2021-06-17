@@ -89,7 +89,6 @@ export default {
   data() {
     return {
       default_picture: "",
-      thumbs: ["img/mickey1.jpg", "img/mickey2.jpg", "img/mickey3.jpg", "img/mickey4.jpg"],
       product_details: [],
     };
   },
