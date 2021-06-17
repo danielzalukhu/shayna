@@ -8,8 +8,10 @@
               <div class="pi-pic">
                 <img v-bind:src="product.galleries[0].image_url" alt="" />
                 <ul>
-                  <li class="w-icon active">
-                    <router-link v-bind:to="'/product/' + product.id"><i class="icon_bag_alt"></i></router-link>
+                  <li @click="saveCart(product.id, product.name, product.price, product.galleries[0].image_url)" class="w-icon active">
+                    <a href="javascript::void(0)" class="primary-btn pd-cart">
+                      <i class="icon_bag_alt"></i>
+                    </a>
                   </li>
                   <li class="quick-view">
                     <router-link v-bind:to="'/product/' + product.id">+ Quick View</router-link>
@@ -47,9 +49,32 @@ export default {
   data() {
     return {
       products: [],
+      user_cart: [],
     };
   },
+  methods: {
+    saveCart(product_id, product_name, product_price, product_image) {
+      const fetchData = {
+        product_id: product_id,
+        product_name: product_name,
+        product_price: product_price,
+        product_image: product_image,
+      };
+
+      this.user_cart.push(fetchData);
+      const parsed = JSON.stringify(this.user_cart);
+      localStorage.setItem("user_cart", parsed);
+    },
+  },
   mounted() {
+    if (localStorage.getItem("user_cart")) {
+      try {
+        this.user_cart = JSON.parse(localStorage.getItem("user_cart"));
+      } catch (e) {
+        localStorage.removeItem("user_cart");
+      }
+    }
+
     axios
       .get("http://127.0.0.1:8000/api/v1/products")
       .then((res) => (this.products = res.data.data))

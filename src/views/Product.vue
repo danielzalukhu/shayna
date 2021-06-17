@@ -29,13 +29,8 @@
                 </div>
                 <div class="product-thumbs" v-if="product_details.galleries.length > 0">
                   <carousel :dots="false" :nav="false" class="product-thumbs-track ps-slider">
-                    <div 
-                        v-for="picture in product_details.galleries" 
-                        :key="picture.id" 
-                        class="pt" 
-                        @click="changeImage(picture.image_url)" 
-                        :class="picture.image_url == default_picture ? 'active' : ''">
-                          <img :src="picture.image_url" alt="" />
+                    <div v-for="product in product_details.galleries" :key="product.id" class="pt" @click="changeImage(product.image_url)" :class="product.image_url == default_picture ? 'active' : ''">
+                      <img :src="product.image_url" alt="" />
                     </div>
                   </carousel>
                 </div>
@@ -47,13 +42,15 @@
                     <h3>{{ product_details.name }}</h3>
                   </div>
                   <div class="pd-desc">
-                    <p>
-                      {{ product_details.description }}
-                    </p>
+                    <p v-html="product_details.description"></p>
                     <h4>Rp. {{ product_details.price }}</h4>
                   </div>
                   <div class="quantity">
-                    <router-link to="/cart"><a href="#" class="primary-btn pd-cart">Add To Cart</a></router-link>
+                    <!-- <router-link to="/cart"> -->
+                    <button class="primary-btn pd-cart" @click="saveCart(product_details.id, product_details.name, product_details.price, product_details.galleries[0].image_url)">
+                      Add To Cart
+                    </button>
+                    <!-- </router-link> -->
                   </div>
                 </div>
               </div>
@@ -90,6 +87,7 @@ export default {
     return {
       default_picture: "",
       product_details: [],
+      user_cart: [],
     };
   },
   methods: {
@@ -104,8 +102,28 @@ export default {
       //   data dari API
       this.default_picture = data.galleries[0].image_url;
     },
+    saveCart(product_id, product_name, product_price, product_image) {
+      const fetchData = {
+        product_id: product_id,
+        product_name: product_name,
+        product_price: product_price,
+        product_image: product_image,
+      };
+
+      this.user_cart.push(fetchData);
+      const parsed = JSON.stringify(this.user_cart);
+      localStorage.setItem("user_cart", parsed);
+    },
   },
   mounted() {
+    if (localStorage.getItem("user_cart")) {
+      try {
+        this.user_cart = JSON.parse(localStorage.getItem("user_cart"));
+      } catch (e) {
+        localStorage.removeItem("user_cart");
+      }
+    }
+
     axios
       .get("http://127.0.0.1:8000/api/v1/products", {
         params: {
