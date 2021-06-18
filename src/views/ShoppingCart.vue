@@ -45,27 +45,14 @@
                           <h5>{{ cart.product_name }}</h5>
                         </td>
                         <td class="p-price first-row">{{ cart.product_price }}</td>
-                        <!-- <td class="p-quantity first-row">2</td> -->
-                        <td class="p-qty first-row">
-                          <form>
-                            <div class="col-lg-2">
-                              <div class="input-group">
-                                <span class="input-group-btn">
-                                  <button type="button" class="quantity-left-minus btn btn-danger btn-number"  data-type="minus" data-field="">
-                                    <span class="glyphicon glyphicon-minus"></span>
-                                  </button>
-                                </span>
-                                <input type="text" id="quantity" name="quantity" class="form-control input-number" value="10" min="1" max="100">
-                                <span class="input-group-btn">
-                                    <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus" data-field="">
-                                        <span class="glyphicon glyphicon-plus"></span>
-                                    </button>
-                                </span>
-                              </div>
-                            </div>
-                          </form>
-                        </td> 
-                        <td class="p-sub-total first-row">300000</td>
+                        <td>
+                          <div class="quantity">
+                            <button class="btn minus-btn disabled" type="button" @click="decrement()">-</button>
+                            <input type="text" id="input_quantity" value="1" />
+                            <button class="btn plus-btn" type="button" @click="increment()">+</button>
+                          </div>
+                        </td>
+                        <td class="p-sub-total first-row" id="price">1</td>
                         <td class="delete-item" @click="removeCartItem(user_cart.index)">
                           <a href="#"
                             ><i class="material-icons">
@@ -139,14 +126,51 @@ export default {
   },
   data() {
     return {
-      user_cart: []
-    }
+      user_cart: [],
+      valueCount: 0,
+    };
   },
   methods: {
     removeCartItem(index) {
       this.user_cart.splice(index, 1);
       const parsed = JSON.stringify(this.user_cart);
       localStorage.setItem("user_cart", parsed);
+    },
+    getElement() {
+      document.querySelector(".minus-btn").setAttribute("disabled", "disabled");
+    },
+    price() {
+      document.getElementById("price").innerText;
+    },
+    priceTotal() {
+      var total = this.valueCount * this.price();
+      document.getElementById("price").innerText = total;
+    },
+    decrement() {
+      document.querySelector(".plus-btn").addEventListener("click", function() {
+        this.valueCount = document.getElementById("input_quantity").value;
+        this.valueCount++;
+
+        document.getElementById("input_quantity").value = this.valueCount;
+        if (this.valueCount > 1) {
+          document.querySelector(".minus-btn").removeAttribute("disabled");
+          document.querySelector(".minus-btn").classList.remove("disabled");
+        }
+        this.priceTotal();
+      });
+    },
+    increment() {
+      document.querySelector(".minus-btn").addEventListener("click", function() {
+        this.valueCount = document.getElementById("input_quantity").value;
+        this.valueCount--;
+
+        document.getElementById("input_quantity").value = this.valueCount;
+        if (this.valueCount == 1) {
+          document.querySelector(".minus-btn").setAttribute("disabled", "disabled");
+        }
+
+        this.priceTotal();
+      });
     },
   },
   mounted() {
@@ -159,35 +183,43 @@ export default {
     }
   },
 };
-
-// eslint-disable-next-line no-undef
-$(document).ready(function(){
-   // eslint-disable-next-line no-undef
-  $('.quantity-right-plus').click(function(e){
-    e.preventDefault();
-    // eslint-disable-next-line no-undef
-    var quantity = parseInt($('#quantity').val());
-    // eslint-disable-next-line no-undef
-    $('#quantity').val(quantity + 1);
-  });
-
-  // eslint-disable-next-line no-undef
-  $('.quantity-left-minus').click(function(e){
-    e.preventDefault();
-    // eslint-disable-next-line no-undef
-    var quantity = parseInt($('#quantity').val());
-        
-    if(quantity>0){
-      // eslint-disable-next-line no-undef
-      $('#quantity').val(quantity - 1);
-    }
-  });    
-});
 </script>
 
 <style scoped>
 .img-cart {
-  width: 200px;
-  height: 125px;
+  width: 100px;
+  height: 100px;
+}
+
+.quantity {
+  display: flex;
+  justify-content: center;
+  /* width: 10px; */
+}
+
+.quantity button {
+  width: 30px;
+  height: 45px;
+  border: 1px solid #000;
+  color: #000;
+  border-radius: 0;
+  background: #fff;
+}
+
+.quantity input {
+  border: none;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  text-align: center;
+  width: 100px;
+  font-size: 20px;
+  color: #000;
+  font-weight: 300;
+}
+
+.total-price {
+  text-align: center;
+  font-size: 30px;
+  color: #fff;
 }
 </style>
