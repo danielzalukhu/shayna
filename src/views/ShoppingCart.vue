@@ -48,11 +48,11 @@
                         <td>
                           <div class="quantity">
                             <button class="btn minus-btn disabled" type="button" @click="decrement()">-</button>
-                            <input type="text" id="input_quantity" value="1" />
+                            <input type="text" ref="input_quantity" value="1" />
                             <button class="btn plus-btn" type="button" @click="increment()">+</button>
                           </div>
                         </td>
-                        <td class="p-sub-total first-row" id="price">1</td>
+                        <td class="p-sub-total first-row" ref="price">1</td>
                         <td class="delete-item" @click="removeCartItem(user_cart.index)">
                           <a href="#"
                             ><i class="material-icons">
@@ -127,7 +127,11 @@ export default {
   data() {
     return {
       user_cart: [],
-      valueCount: 0,
+      value_count: 0,
+      btn_min: document.querySelector(".minus-btn"),
+      btn_plus: document.querySelector(".plus-btn"),
+      input_quantity: document.getElementById("input_quantity"),
+      price_text: document.getElementById("price"),
     };
   },
   methods: {
@@ -136,41 +140,39 @@ export default {
       const parsed = JSON.stringify(this.user_cart);
       localStorage.setItem("user_cart", parsed);
     },
-    getElement() {
-      document.querySelector(".minus-btn").setAttribute("disabled", "disabled");
-    },
-    price() {
-      document.getElementById("price").innerText;
-    },
     priceTotal() {
-      var total = this.valueCount * this.price();
-      document.getElementById("price").innerText = total;
+      var total = this.value_count * this.price_text.innerText;
+      this.price_text.innerText = total;
     },
     decrement() {
-      document.querySelector(".plus-btn").addEventListener("click", function() {
-        this.valueCount = document.getElementById("input_quantity").value;
-        this.valueCount++;
+      if (this.btn_min) {
+        this.btn_min.addEventListener("click", function() {
+          this.value_count = this.input_quantity.value;
+          this.value_count--;
 
-        document.getElementById("input_quantity").value = this.valueCount;
-        if (this.valueCount > 1) {
-          document.querySelector(".minus-btn").removeAttribute("disabled");
-          document.querySelector(".minus-btn").classList.remove("disabled");
-        }
-        this.priceTotal();
-      });
+          this.input_quantity.value = this.value_count;
+          if (this.value_count == 1) {
+            this.btn_min.setAttribute("disabled", "disabled");
+          }
+
+          this.priceTotal();
+        });
+      }
     },
     increment() {
-      document.querySelector(".minus-btn").addEventListener("click", function() {
-        this.valueCount = document.getElementById("input_quantity").value;
-        this.valueCount--;
+      if (this.btn_plus) {
+        this.btn_plus.addEventListener("click", function() {
+          this.value_count = this.input_quantity.value;
+          this.value_count++;
 
-        document.getElementById("input_quantity").value = this.valueCount;
-        if (this.valueCount == 1) {
-          document.querySelector(".minus-btn").setAttribute("disabled", "disabled");
-        }
-
-        this.priceTotal();
-      });
+          this.input_quantity.value = this.value_count;
+          if (this.value_count > 1) {
+            this.btn_min.removeAttribute("disabled");
+            this.btn_min.classList.remove("disabled");
+          }
+          this.priceTotal();
+        });
+      }
     },
   },
   mounted() {

@@ -64,6 +64,8 @@ export default {
       this.user_cart.push(fetchData);
       const parsed = JSON.stringify(this.user_cart);
       localStorage.setItem("user_cart", parsed);
+
+      this.$swal("Success add to cart");
     },
   },
   mounted() {
