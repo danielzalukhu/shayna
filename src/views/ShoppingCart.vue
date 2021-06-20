@@ -46,19 +46,17 @@
                         </td>
                         <td class="p-price first-row">{{ cart.product_price }}</td>
                         <td>
-                          <div class="quantity">
+                          <div class="quantity" >
                             <button class="btn minus-btn disabled" type="button" @click="decrement()">-</button>
-                            <input type="text" ref="input_quantity" value="1" />
+                              <input type="text" v-model="input_qty"  v-bind="cart.id" min="1" />
                             <button class="btn plus-btn" type="button" @click="increment()">+</button>
                           </div>
                         </td>
-                        <td class="p-sub-total first-row" ref="price">1</td>
+                        <td class="p-price first-row">{{ cart.product_price * input_qty }}</td>
                         <td class="delete-item" @click="removeCartItem(user_cart.index)">
-                          <a href="#"
-                            ><i class="material-icons">
-                              close
-                            </i></a
-                          >
+                          <a href="#">
+                            <i class="material-icons">delete</i>
+                          </a>
                         </td>
                       </tr>
                     </tbody>
@@ -126,12 +124,8 @@ export default {
   },
   data() {
     return {
-      user_cart: [],
-      value_count: 0,
-      btn_min: document.querySelector(".minus-btn"),
-      btn_plus: document.querySelector(".plus-btn"),
-      input_quantity: document.getElementById("input_quantity"),
-      price_text: document.getElementById("price"),
+      user_cart: [],  
+      input_qty: '1',
     };
   },
   methods: {
@@ -140,42 +134,27 @@ export default {
       const parsed = JSON.stringify(this.user_cart);
       localStorage.setItem("user_cart", parsed);
     },
-    priceTotal() {
-      var total = this.value_count * this.price_text.innerText;
-      this.price_text.innerText = total;
-    },
     decrement() {
-      if (this.btn_min) {
-        this.btn_min.addEventListener("click", function() {
-          this.value_count = this.input_quantity.value;
-          this.value_count--;
+      this.input_qty--;
 
-          this.input_quantity.value = this.value_count;
-          if (this.value_count == 1) {
-            this.btn_min.setAttribute("disabled", "disabled");
-          }
-
-          this.priceTotal();
-        });
+      if(this.input_qty < 0) {
+        this.$swal.fire({
+          title: 'Error!',
+          text: 'Minimun quantity is: 1',
+          icon: 'error',
+          confirmButtonText: 'Understand'
+        })
+        this.input_qty = 0;
       }
     },
     increment() {
-      if (this.btn_plus) {
-        this.btn_plus.addEventListener("click", function() {
-          this.value_count = this.input_quantity.value;
-          this.value_count++;
-
-          this.input_quantity.value = this.value_count;
-          if (this.value_count > 1) {
-            this.btn_min.removeAttribute("disabled");
-            this.btn_min.classList.remove("disabled");
-          }
-          this.priceTotal();
-        });
-      }
+      this.input_qty++;
     },
+    
   },
   mounted() {
+
+
     if (localStorage.getItem("user_cart")) {
       try {
         this.user_cart = JSON.parse(localStorage.getItem("user_cart"));

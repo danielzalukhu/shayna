@@ -65,7 +65,12 @@ export default {
       const parsed = JSON.stringify(this.user_cart);
       localStorage.setItem("user_cart", parsed);
 
-      this.$swal("Success add to cart");
+      this.$swal.fire({
+        title: 'Great!',
+        text: 'Item success add to card',
+        icon: 'success',
+        confirmButtonText: 'Understand'
+      })
     },
   },
   mounted() {
