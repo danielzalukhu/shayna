@@ -53,7 +53,7 @@
                           </div>
                         </td>
                         <td class="p-price first-row" v-bind:sub_total="cart.product_price * input_quantity">{{ cart.product_price * input_quantity }}</td>
-                        <td class="delete-item" @click="removeCartItem(user_cart.index)">
+                        <td class="delete-item" @click="removeCartItem(user_cart.product_id)">
                           <a href="#">
                             <i class="material-icons">delete</i>
                           </a>
@@ -164,10 +164,18 @@ export default {
     };
   },
   methods: {
-    removeCartItem(index) {
+    removeCartItem(idx) {
+      // Cari tau id dari si item yang akan dihapus
+      let userCartStorage = JSON.parse(localStorage.getItem("user_cart"));
+      let itemInUserCartStorage = userCartStorage.map(itemInUserCartStorage => itemInUserCartStorage.product_id);
+
+      // Cocokin id item yang mau dihapus (artinya id product yg diklik oleh user) dgn yang ada di localStorage
+      let index = itemInUserCartStorage.findIndex(product_id => product_id == idx);
       this.user_cart.splice(index, 1);
+
       const parsed = JSON.stringify(this.user_cart);
       localStorage.setItem("user_cart", parsed);
+      window.location.reload();
     },
     decrement() {
       this.input_quantity--;
