@@ -113,6 +113,18 @@ export default {
       this.user_cart.push(fetchData);
       const parsed = JSON.stringify(this.user_cart);
       localStorage.setItem("user_cart", parsed);
+
+      this.$swal.fire({
+        title: 'Great!',
+        text: 'Item success add to card',
+        icon: 'success',
+        confirmButtonText: 'OK',        
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();          
+        }
+      })
     },
   },
   mounted() {

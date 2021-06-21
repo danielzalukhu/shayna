@@ -69,7 +69,12 @@ export default {
         title: 'Great!',
         text: 'Item success add to card',
         icon: 'success',
-        confirmButtonText: 'Understand'
+        confirmButtonText: 'OK',        
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();          
+        }
       })
     },
   },

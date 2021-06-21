@@ -37,7 +37,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="cart in user_cart" :key="cart.id">
+                      <tr v-for="cart in user_cart" :key="cart.product_id">
                         <td class="cart-pic first-row">
                           <img class="img-cart" :src="cart.product_image" />
                         </td>
@@ -46,13 +46,13 @@
                         </td>
                         <td class="p-price first-row">{{ cart.product_price }}</td>
                         <td>
-                          <div class="quantity" >
+                          <div class="quantity">
                             <button class="btn minus-btn disabled" type="button" @click="decrement()">-</button>
-                              <input type="text" v-model="input_qty"  v-bind="cart.id" min="1" />
+                            <input type="text" v-model="input_quantity" min="1" />
                             <button class="btn plus-btn" type="button" @click="increment()">+</button>
                           </div>
                         </td>
-                        <td class="p-price first-row">{{ cart.product_price * input_qty }}</td>
+                        <td class="p-price first-row" v-bind:sub_total="cart.product_price * input_quantity">{{ cart.product_price * input_quantity }}</td>
                         <td class="delete-item" @click="removeCartItem(user_cart.index)">
                           <a href="#">
                             <i class="material-icons">delete</i>
@@ -71,19 +71,45 @@
                   <form>
                     <div class="form-group">
                       <label for="namaLengkap">Nama lengkap</label>
-                      <input type="text" class="form-control" id="namaLengkap" aria-describedby="namaHelp" placeholder="Masukan Nama" />
+                      <input 
+                        type="text" 
+                        class="form-control" 
+                        id="namaLengkap" 
+                        aria-describedby="namaHelp" 
+                        placeholder="Customer Name" 
+                        v-model="customer_data.name"
+                      />
                     </div>
                     <div class="form-group">
                       <label for="namaLengkap">Email Address</label>
-                      <input type="email" class="form-control" id="emailAddress" aria-describedby="emailHelp" placeholder="Masukan Email" />
+                      <input 
+                        type="email"  
+                        class="form-control" 
+                        id="emailAddress" 
+                        aria-describedby="emailHelp" 
+                        placeholder="Email" 
+                        v-model="customer_data.email"
+                      />
                     </div>
                     <div class="form-group">
                       <label for="namaLengkap">No. HP</label>
-                      <input type="text" class="form-control" id="noHP" aria-describedby="noHPHelp" placeholder="Masukan No. HP" />
+                      <input 
+                        type="text" 
+                        class="form-control" 
+                        id="noHP" 
+                        aria-describedby="noHPHelp" 
+                        placeholder="Phone Number" 
+                        v-model="customer_data.number"
+                      />
                     </div>
                     <div class="form-group">
-                      <label for="alamatLengkap">Alamat Lengkap</label>
-                      <textarea class="form-control" id="alamatLengkap" rows="3"></textarea>
+                      <label for="alamatLengkap">Address</label>
+                      <textarea 
+                        class="form-control" 
+                        id="alamatLengkap" 
+                        rows="4"
+                        v-model="customer_data.address">
+                      </textarea>
                     </div>
                   </form>
                 </div>
@@ -95,14 +121,16 @@
               <div class="col-lg-12">
                 <div class="proceed-checkout text-left">
                   <ul>
-                    <li class="subtotal">ID Transaction <span>#SH12000</span></li>
-                    <li class="subtotal mt-3">Subtotal (Rp) <span>240.00</span></li>
-                    <li class="subtotal mt-3">Total Biaya (Rp) <span>440.00</span></li>
+                    <li class=" subtotal mt-3">
+                      Total Biaya (Rp) <span> {{ totalPrice() }}</span>
+                    </li>
                     <li class="subtotal mt-3">Bank Transfer <span>Mandiri</span></li>
                     <li class="subtotal mt-3">No. Rekening <span>2208 1996 1403</span></li>
                     <li class="subtotal mt-3">Nama Penerima <span>Shayna</span></li>
                   </ul>
-                  <router-link to="/success"><a href="#" class="proceed-btn">I ALREADY PAID</a></router-link>
+                  <!-- <router-link to="/success"> -->
+                    <a href="#" @click="checkout()" class="proceed-btn">I ALREADY PAID</a>
+                  <!-- </router-link> -->
                 </div>
               </div>
             </div>
@@ -116,6 +144,7 @@
 
 <script>
 import HeaderShayna from "@/components/HeaderShayna.vue";
+import axios from "axios";
 
 export default {
   name: "ShoppingCart",
@@ -124,8 +153,14 @@ export default {
   },
   data() {
     return {
-      user_cart: [],  
-      input_qty: '1',
+      user_cart: [],
+      input_quantity: "1",
+      customer_data: {
+        name: "",
+        email: "",
+        number: "",
+        address: "",
+      },
     };
   },
   methods: {
@@ -135,26 +170,62 @@ export default {
       localStorage.setItem("user_cart", parsed);
     },
     decrement() {
-      this.input_qty--;
+      this.input_quantity--;
 
-      if(this.input_qty < 0) {
+      if (this.input_quantity < 0) {
         this.$swal.fire({
-          title: 'Error!',
-          text: 'Minimun quantity is: 1',
-          icon: 'error',
-          confirmButtonText: 'Understand'
-        })
-        this.input_qty = 0;
+          title: "Error!",
+          text: "Minimun quantity is: 1",
+          icon: "error",
+          confirmButtonText: "Understand",
+        });
+        this.input_quantity = 0;
       }
     },
     increment() {
-      this.input_qty++;
+      this.input_quantity++;
     },
-    
+    totalPrice() {
+      return this.user_cart.reduce(function(items, value) {
+        return items + value.product_price;
+      }, 0);
+    },
+    checkout() {
+      let products =this.user_cart.map(function(product){
+        return {
+          product_id: product.product_id,
+          qty: 5,
+          subtotal: product.product_price 
+        }
+      })
+      // console.log(products);
+
+      let sendProducts = {
+        name: this.customer_data.name,
+        email: this.customer_data.email,
+        number: this.customer_data.number,
+        address: this.customer_data.address,
+        transaction_total: this.totalPrice(),
+        transaction_status: "pending",
+        transaction_details: products
+      };
+      // console.log(sendProducts);
+
+      axios 
+        .post(
+          "http://127.0.0.1:8000/api/v1/checkout", 
+          sendProducts
+        )
+        .then(() => this.$router.push('success'))
+        // es-lint-disable-next-line no-console
+        .catch(err => console.log(err));
+
+        this.user_cart.length = [];
+      const parsed = JSON.stringify(this.user_cart);
+      localStorage.setItem("user_cart", parsed);
+    }
   },
   mounted() {
-
-
     if (localStorage.getItem("user_cart")) {
       try {
         this.user_cart = JSON.parse(localStorage.getItem("user_cart"));
